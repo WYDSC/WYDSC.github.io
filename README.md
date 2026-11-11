@@ -1,0 +1,51 @@
+# WYD Sogang 2027 conference website
+
+2027 WYD-Sogang International Conference: AI and Human Flourishing
+
+3–5 August 2027 · Sogang University · Seoul, South Korea
+
+Official conference contact: wydsc2027@sogang.ac.kr
+
+## Website
+
+Target URL: https://wydsc.github.io/
+
+Seven English pages cover the conference, Call for Papers, keynote speakers, program, registration, venue and organizers. The site has an original illustrated banner, responsive navigation, accessible headings, print styles, social preview metadata, a sitemap and a 404 page. It requires no Node packages, theme service, database or paid hosting.
+
+The sample was consulted for information architecture only. Its WCCA content, imagery, ICCV registration rules, organizers, program, submission link and Jekyll theme are not reused.
+
+## Edit and preview
+
+Edit `data/conference.json` to change conference facts, topics, fees, dates and confirmed links. An unknown value is `null`; the generated page displays TBU. Confirm speaker participation and revise `speakers_status` when the organizer has approved the list. Content structure and longer copy are in `scripts/build_site.py`; styles and mobile navigation are in `assets/`.
+
+Run with Python 3.10 or later:
+
+```sh
+python3 scripts/build_site.py
+python3 scripts/verify_site.py
+python3 -m http.server 4173 --bind 127.0.0.1 --directory docs
+```
+
+Open http://127.0.0.1:4173/ to preview. `docs/` is the complete, prebuilt static site. Commit the generated `docs/` whenever source content or assets change. No Python runs on GitHub Pages.
+
+## GitHub Pages deployment
+
+Use repository `WYDSC/WYDSC.github.io`. In Settings → Pages choose “Deploy from a branch”, branch `main`, folder `/docs`, then Save. After a Pages deployment succeeds, verify the public URL and the registration page. See [GitHub’s publishing-source documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site).
+
+The `.nojekyll` file inside `docs/` disables Jekyll processing. Only the contents of `docs/` are served by Pages. The local `sample/`, original CFP Word document and `.local/` planning notes are excluded from version control and deployment.
+
+## Registration and payment
+
+The current site is an information site. It collects no registration data, stores no personal data and processes no payment. The proposed rates are US$100 for Early Bird and US$150 for standard registration. The domestic fee and currency are not inferred from those amounts.
+
+Registration remains closed until `registration_url`, `privacy_policy`, `refund_policy` and `registration_inclusions` are provided, and `fees.status` is `confirmed`. Links must use HTTPS. Configure `fees.paypal_url`, `fees.domestic_payment_url` and/or `fees.domestic_payment_instructions` only after the conference administration has approved the receiving entity, account and process. These links do not automatically verify settlement. A hosted payment page may be linked from a static website, but private API credentials, payment verification and participant records must be handled by the chosen external service or backend.
+
+Proposal submission also remains closed until an approved `submission_url` or `submission_email` is supplied. The shared contact mailbox is for inquiries and is not silently repurposed as a submission system.
+
+## Sources and status
+
+Conference dates, title, host, 18 listed subtopics, three named keynote speakers and the 300-word proposal length come from the supplied `Call for Papers_draft.11.8..docx`. The contact mailbox and proposed registration fees come from the organizer’s instructions on 11 November 2026. The source is a draft; review the public content before distributing the announcement widely. The site explicitly identifies the speaker list as coming from the draft and leaves participation, talk titles and session times TBU.
+
+The opening papal quotation was not republished because its original wording and attribution have not been independently checked. No publication, proceedings, review format, attendance mode or committee membership is inferred from the example workshop.
+
+Original image provenance and the generation prompt are in `assets/images/`.

@@ -1,0 +1,9 @@
+sample/
+*.docx
+.DS_Store
+.local/
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+

@@ -1,0 +1,99 @@
+{
+  "name": "2027 WYD-Sogang International Conference",
+  "short_name": "WYD-Sogang 2027",
+  "theme": "AI and Human Flourishing",
+  "focus": "AI: humanism, science and religion",
+  "dates": "3–5 August 2027",
+  "venue": "Sogang University",
+  "location": "Seoul, South Korea",
+  "email": "wydsc2027@sogang.ac.kr",
+  "site_url": "https://wydsc.github.io",
+  "updated": "2026-11-11",
+  "proposal_words": 300,
+  "submission_deadline": null,
+  "deadline_timezone": null,
+  "notification_date": null,
+  "final_paper_deadline": null,
+  "submission_url": null,
+  "submission_email": null,
+  "submission_instructions": null,
+  "registration_open_date": null,
+  "early_bird_deadline": null,
+  "registration_deadline": null,
+  "registration_url": null,
+  "registration_inclusions": null,
+  "refund_policy": null,
+  "privacy_policy": null,
+  "venue_building": null,
+  "venue_room": null,
+  "accessibility_contact": null,
+  "travel_information": null,
+  "accommodation_information": null,
+  "visa_information": null,
+  "program_note": null,
+  "committee_note": null,
+  "fees": {
+    "status": "proposed",
+    "currency": "USD",
+    "early_bird": 100,
+    "standard": 150,
+    "domestic_currency": null,
+    "domestic_amount": null,
+    "paypal_url": null,
+    "domestic_payment_url": null,
+    "domestic_payment_instructions": null
+  },
+  "speakers_status": "Listed in the Call for Papers draft. Participation, talk titles and session times are TBU.",
+  "speakers": [
+    {"name": "Stanton E. F. Wortham", "affiliation": "Boston College", "track": "Humanism", "initials": "SW", "talk_title": null, "bio": null},
+    {"name": "Hyunjung Kim", "affiliation": "Sogang University", "track": "Science", "initials": "HK", "talk_title": null, "bio": null},
+    {"name": "Andrew Davison", "affiliation": "University of Oxford", "track": "Religion", "initials": "AD", "talk_title": null, "bio": null}
+  ],
+  "tracks": [
+    {
+      "id": "humanism",
+      "name": "Humanism",
+      "number": "01",
+      "description": "How can AI serve people and the societies we share?",
+      "summary": "Governance, democracy, work, development and education in the age of AI.",
+      "topics": [
+        "AI and Future Governance",
+        "Peace and Democracy in the Era of AI",
+        "International Politics and Human Security in the Age of AI",
+        "AI, Labor Markets, and the Distribution of Gains",
+        "Markets, Firms, and Institutions in the AI Era",
+        "AI and Socioeconomic Development: Growth, Divergence, and Measurement",
+        "AI in University Education"
+      ]
+    },
+    {
+      "id": "science",
+      "name": "Science",
+      "number": "02",
+      "description": "What can AI help us discover, build and care for?",
+      "summary": "Healthcare, sustainability, intelligent systems and scientific discovery.",
+      "topics": [
+        "AI for Healthcare: Medical Imaging, Diagnostics, Drug Discovery, Biomedical Engineering, Medical Devices, and Digital Health",
+        "AI for Sustainability: Renewable Energy, Environmental Protection, Advanced Materials, Carbon Neutrality, and Sustainable Manufacturing",
+        "AI for Advanced Technologies: AI Semiconductors, Robotics, Intelligent Systems, Smart Manufacturing, Autonomous Systems, and Next-Generation Electronics",
+        "Frontiers of AI and Intelligent Systems",
+        "AI for Scientific Discovery and Innovation",
+        "AI for Human and Planetary Well-Being"
+      ]
+    },
+    {
+      "id": "religion",
+      "name": "Religion",
+      "number": "03",
+      "description": "What does it mean to be human in an age of AI?",
+      "summary": "Personhood, spiritual direction, Catholic education and social teaching.",
+      "topics": [
+        "AI and the Definition of Personhood",
+        "AI and Spiritual Direction",
+        "Catholic Education in the Age of AI",
+        "AI from the Perspective of Catholic Social Teaching (or Moral Theology)",
+        "AI and the Catholic Understanding of the Human Person"
+      ]
+    }
+  ]
+}
