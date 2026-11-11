@@ -93,11 +93,14 @@ def header(slug, prefix):
 
 def footer(prefix):
     links = ''.join(f'<a href="{prefix}{path}/">{label}</a>' for path, label in PAGES if path)
+    planned_domain = ''
+    if C.get('planned_site_url') and C.get('domain_status') != 'active':
+        planned_domain = f'<p class="footer-domain">Planned conference address: <span>{e(urlparse(C["planned_site_url"]).netloc)}</span> {TBU}</p>'
     return f'''<footer class="site-footer"><div class="wrap">
 <div class="footer-grid"><div><p class="footer-brand">AI and Human Flourishing.</p><p class="footer-description">{e(C['name'])}<br>{e(C['dates'])} · {e(C['venue'])}<br>{e(C['location'])}</p></div>
 <div><h2 class="footer-heading">Explore the conference</h2><div class="footer-links">{links}</div></div>
 <div><h2 class="footer-heading">Get in touch</h2><a class="footer-contact" href="{email_link()}">{e(C['email'])} ↗</a><p class="footer-description" style="margin-top:12px">For conference, submission and<br>registration inquiries.</p></div></div>
-<div class="footer-bottom"><p>© 2027 WYD-Sogang International Conference</p><p>Details will be updated as arrangements are finalized. TBU = To be updated.</p></div>
+{planned_domain}<div class="footer-bottom"><p>© 2027 WYD-Sogang International Conference</p><p>Details will be updated as arrangements are finalized. TBU = To be updated.</p></div>
 </div></footer>'''
 
 
@@ -294,6 +297,10 @@ def main():
         build()
     render('404','Page not found','This page could not be found on the WYD-Sogang 2027 website.',f'<div class="wrap not-found"><p class="eyebrow">404 · Page not found</p><h1>Let’s find your way.</h1><p class="lead">The page you’re looking for may have moved.</p>{button("Back to the conference","../")}</div>')
     (OUT/'.nojekyll').write_text('',encoding='utf-8')
+    if C.get('domain_status') == 'active':
+        if C['site_url'] != C.get('planned_site_url'):
+            raise ValueError('The active site_url must match planned_site_url before custom-domain publication.')
+        (OUT/'CNAME').write_text(urlparse(C['site_url']).netloc+'\n',encoding='utf-8')
     urls = [C['site_url'] + (f'/{slug}/' if slug else '/') for slug,_ in PAGES]
     sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join(f'<url><loc>{e(url)}</loc><lastmod>{e(C["updated"])}</lastmod></url>\n' for url in urls) + '</urlset>\n'
     (OUT/'sitemap.xml').write_text(sitemap,encoding='utf-8')
