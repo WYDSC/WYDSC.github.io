@@ -153,6 +153,12 @@ p { margin-bottom: 20px; }
 .article-section h2 { font-size: 35px; letter-spacing: -1px; margin-bottom: 20px; }
 .article-section p { color: #4c5c53; font-size: 15px; }
 .article-section p:last-child { margin-bottom: 0; }
+.papal-quote { margin: 0 0 30px; padding: 27px 29px; background: var(--sage); border-top: 1px solid #ccd4c4; border-bottom: 1px solid #ccd4c4; }
+.papal-quote blockquote { margin: 0; }
+.papal-quote blockquote p { color: var(--ink); font-family: var(--serif); font-size: 21px; line-height: 1.55; }
+.papal-quote figcaption { color: var(--muted); font-size: 11px; line-height: 1.65; }
+.papal-quote figcaption a { color: var(--ink); }
+.submission-guidelines { margin: 0 0 20px; padding-left: 24px; color: #4c5c53; font-size: 15px; }
 .sidebar { position: sticky; top: 125px; }
 .side-panel { background: var(--sage); padding: 26px; margin-bottom: 22px; }
 .side-panel h2 { font-size: 26px; letter-spacing: -.6px; margin-bottom: 17px; }
@@ -351,6 +357,9 @@ details p { padding: 0 26px 21px 0; font-size: 13px !important; }
   .article-section { margin-bottom: 30px; padding-bottom: 30px; }
   .article-section h2 { font-size: 31px; }
   .article-section p { font-size: 14px; }
+  .papal-quote { padding: 22px 20px; }
+  .papal-quote blockquote p { font-size: 18px; }
+  .submission-guidelines { font-size: 14px; }
   .sidebar { grid-template-columns: 1fr; gap: 20px; }
   .topic-list { font-size: 13px; }
   .topic-title h3 { font-size: 27px; }

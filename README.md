@@ -58,6 +58,6 @@ Proposal submission also remains closed until an approved `submission_url` or `s
 
 Conference dates, title, host, 18 listed subtopics, three named keynote speakers and the 300-word proposal length come from the supplied `Call for Papers_draft.11.8..docx`. The contact mailbox and proposed registration fees come from the organizer’s instructions on 11 November 2026. The source is a draft; review the public content before distributing the announcement widely. The site explicitly identifies the speaker list as coming from the draft and leaves participation, talk titles and session times TBU.
 
-The opening papal quotation was not republished because its original wording and attribution have not been independently checked. No publication, proceedings, review format, attendance mode or committee membership is inferred from the example workshop.
+The opening quotation is reproduced from Pope Leo XIV's 17 June 2025 [message to participants in the Second Annual Conference on Artificial Intelligence, Ethics, and Corporate Governance](https://www.vatican.va/content/leo-xiv/en/messages/pont-messages/2025/documents/20250617-messaggio-ia.html). Its wording, document title and date were checked against the Holy See's English text on 12 November 2026. No publication, proceedings, review format, attendance mode or committee membership is inferred from the example workshop.
 
 Original image provenance and the generation prompt are in `assets/images/`.

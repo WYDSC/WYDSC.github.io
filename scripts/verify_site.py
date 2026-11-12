@@ -51,6 +51,9 @@ def main():
         for unwanted in ('WCCA','ICCV','Openreview','***@gmail.com','[DD Month YYYY]','javascript:'):
             if unwanted in text:
                 errors.append(f'{path}: inherited sample or invalid content {unwanted}')
+        for removed in ('accommodation', 'visa'):
+            if removed in text.lower():
+                errors.append(f'{path}: removed travel service still appears: {removed}')
         if 'wydsc2027@sogang.ac.kr' not in text:
             errors.append(f'{path}: official contact missing')
         for href in page.links:
@@ -77,6 +80,14 @@ def main():
     cfp = (PUBLIC / 'call-for-papers/index.html').read_text(encoding='utf-8')
     from html import unescape
     readable_cfp = unescape(cfp)
+    for expected in (
+        config['papal_quote'],
+        config['papal_quote_source'],
+        config['papal_quote_url'],
+        f'between {config["submission_open_date"]}, and {config["submission_deadline"]}',
+    ):
+        if expected not in readable_cfp:
+            errors.append(f'CFP source or submission-period content omitted: {expected}')
     for track in config['tracks']:
         for topic in track['topics']:
             if topic not in readable_cfp:
