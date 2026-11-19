@@ -105,14 +105,11 @@ def header(slug, prefix):
 
 def footer(prefix):
     links = ''.join(f'<a href="{prefix}{path}/">{label}</a>' for path, label in PAGES if path)
-    planned_domain = ''
-    if C.get('planned_site_url') and C.get('domain_status') != 'active':
-        planned_domain = f'<p class="footer-domain">Planned conference address: <span>{e(urlparse(C["planned_site_url"]).netloc)}</span> {TBU}</p>'
     return f'''<footer class="site-footer"><div class="wrap">
 <div class="footer-grid"><div><p class="footer-brand">AI and Human Flourishing.</p><p class="footer-description">{e(C['name'])}<br>{e(C['dates'])} · {e(C['venue'])}<br>{e(C['location'])}</p></div>
 <div><h2 class="footer-heading">Explore the conference</h2><div class="footer-links">{links}</div></div>
 <div><h2 class="footer-heading">Get in touch</h2><a class="footer-contact" href="{email_link()}">{e(C['email'])} ↗</a><p class="footer-description" style="margin-top:12px">For conference, submission and<br>registration inquiries.</p></div></div>
-{planned_domain}<div class="footer-bottom"><p>© 2027 WYD-Sogang International Conference</p><p>Details will be updated as arrangements are finalized. TBU = To be updated.</p></div>
+<div class="footer-bottom"><p>© 2027 WYD-Sogang International Conference</p><p>Details will be updated as arrangements are finalized. TBU = To be updated.</p></div>
 </div></footer>'''
 
 

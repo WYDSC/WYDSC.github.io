@@ -40,7 +40,7 @@ The `.nojekyll` file inside `docs/` disables Jekyll processing. Only the content
 
 The organizer will request `wydsc.sogang.ac.kr` from Sogang University's Digital Information Office. The DNS requirement is a CNAME for `wydsc.sogang.ac.kr` pointing to `wydsc.github.io` (no scheme, path or repository name). The application must name the intended host and CNAME target; assigning a name alone does not connect hosting.
 
-The final address is stored as `planned_site_url` with `domain_status: pending`; the footer marks it TBU. Until the university coordinates the actual switch, canonical URLs, social previews and the sitemap use the working GitHub Pages address. No live `docs/CNAME` is installed at this stage.
+The university hostname is stored in `planned_site_url`. Canonical URLs, social previews and the sitemap use `site_url` from `data/conference.json`.
 
 At cutover, verify the domain with the TXT record issued in the WYDSC organization's Pages settings, claim the custom domain in the repository, and then coordinate the CNAME change with the university. After DNS validation and certificate issuance, enable Enforce HTTPS. Set `site_url` to `https://wydsc.sogang.ac.kr`, set `domain_status` to `active`, rebuild, verify and publish. The builder then writes `docs/CNAME` and updates all canonical, social and sitemap URLs. Check that the custom address serves every page and the original GitHub address redirects correctly. The intended hostname is recorded in `deployment/CNAME.pending`, outside the publishing directory.
 
