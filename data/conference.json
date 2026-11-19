@@ -78,11 +78,11 @@
       "description": "What can AI help us discover, build and care for?",
       "summary": "Healthcare, sustainability, intelligent systems and scientific discovery.",
       "topics": [
+        "AI for Scientific Discovery and Innovation: physics, chemistry, materials, large-scale facilities and data-driven experimentation",
+        "Foundations of AI: Learning, Reasoning, and the Limits of Machine Intelligence",
         "AI for Healthcare: Medical Imaging, Diagnostics, Drug Discovery, Biomedical Engineering, Medical Devices, and Digital Health",
         "AI for Sustainability: Renewable Energy, Environmental Protection, Advanced Materials, Carbon Neutrality, and Sustainable Manufacturing",
         "AI for Advanced Technologies: AI Semiconductors, Robotics, Intelligent Systems, Smart Manufacturing, Autonomous Systems, and Next-Generation Electronics",
-        "Frontiers of AI and Intelligent Systems",
-        "AI for Scientific Discovery and Innovation",
         "AI for Human and Planetary Well-Being"
       ]
     },
