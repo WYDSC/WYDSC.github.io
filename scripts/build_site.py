@@ -23,16 +23,16 @@ def value_or_tbu(value):
     return e(value) if value is not None and str(value).strip() else TBU
 
 
-def by_date(value):
-    return f"by {value}" if value is not None and str(value).strip() else None
+def date_range(opening, deadline):
+    if opening and deadline:
+        return f"{opening} through {deadline}"
+    if opening:
+        return f"From {opening}"
+    return f"By {deadline}" if deadline else None
 
 
-def submission_period():
-    opening = C["submission_open_date"]
-    deadline = C["submission_deadline"]
-    if not opening or not deadline:
-        return None
-    return f"between {opening}, and {deadline}"
+def submission_materials():
+    return f"a {C['proposal_words']}-word abstract and a one-page CV"
 
 
 def checked_url(value):
@@ -159,14 +159,18 @@ def render(slug, title, description, body):
     target.write_text(html, encoding="utf-8")
 
 
-def dates():
+def submission_dates():
     return [
-        ("Proposal submission opens", C["submission_open_date"]),
-        ("Proposal submission deadline", C["submission_deadline"]),
-        ("Acceptance notification", C["notification_date"]),
-        ("Early Bird registration", by_date(C["early_bird_deadline"])),
-        ("Conference", C["dates"]),
+        ("Abstract submission opens", C["submission_open_date"]),
+        ("Abstract submission deadline", C["submission_deadline"]),
     ]
+
+
+def registration_periods():
+    return {
+        "Early Bird registration": date_range(C["registration_open_date"], C["early_bird_deadline"]),
+        "Regular registration": date_range(C.get("regular_registration_open_date"), C["registration_deadline"]),
+    }
 
 
 def date_rows(rows):
@@ -190,7 +194,7 @@ def sidebar(items=(), registration=False):
     if registration:
         panel = f'<h2>Registration inquiries</h2><p>For questions about participation, fees or payment arrangements, contact the conference team.</p>{button("Email the conference team",email_link("WYD-Sogang 2027 registration inquiry"))}'
     else:
-        panel = f'<h2>At a glance</h2><p>{e(C["dates"])}<br>{e(C["venue"])}<br>{e(C["location"])}</p>{date_rows(dates()[:2])}{button("Registration information","../registration/")}'
+        panel = f'<h2>At a glance</h2><p>{e(C["dates"])}<br>{e(C["venue"])}<br>{e(C["location"])}</p>{date_rows(submission_dates())}{button("Registration information","../registration/")}'
     nav = f'<nav class="side-nav" aria-label="On this page"><p class="side-label">On this page</p>{"".join(f"<a href=\"#{key}\">{e(label)}</a>" for key,label in items)}</nav>' if items else ""
     return f'<aside class="sidebar"><div class="side-panel">{panel}</div>{nav}</aside>'
 
@@ -204,6 +208,12 @@ def article(key, title, body):
 
 
 def home():
+    milestones = [
+        *submission_dates(),
+        ("Acceptance notification", C["notification_date"]),
+        *registration_periods().items(),
+        ("Conference", C["dates"]),
+    ]
     track_cards = []
     for track in C['tracks']:
         track_cards.append(f'''<a class="track" href="./call-for-papers/#{track['id']}"><div class="track-top"><span class="track-number">{track['number']}</span>{icon(track['id'],'track-glyph')}</div><h3>{track['name']}</h3><p>{e(track['summary'])}</p><div class="track-bottom"><span>Explore topics</span><span aria-hidden="true">↗</span></div></a>''')
@@ -215,8 +225,8 @@ def home():
 <section class="section section-rule" id="about"><div class="wrap intro-grid"><div><p class="eyebrow">The conference</p><h2>What does it mean<br>to flourish in<br>an age of AI?</h2></div><div class="intro-text"><p>Artificial intelligence is changing how we learn, work, discover and understand ourselves. Its possibilities invite hope. Its risks call for careful thought.</p><p>The 2027 WYD-Sogang International Conference brings these questions into a shared conversation. Hosted at Sogang University in Seoul, the conference explores AI and human flourishing through humanism, science and religion.</p><p>We invite scholars from across disciplines to examine the benefits and risks of AI, and to consider how its development can serve human life.</p></div></div></section>
 <section class="section"><div class="wrap"><div class="section-head"><div><p class="eyebrow">Three perspectives. A shared inquiry.</p><h2>Across disciplines.</h2></div>{text_link('All topics & submission details','./call-for-papers/')}</div><div class="tracks">{''.join(track_cards)}</div><p class="open-track">Thinking beyond these fields? <a href="./call-for-papers/#open-track">Open-track and interdisciplinary proposals are also welcome.</a></p></div></section>
 <section class="section sage-section"><div class="wrap"><div class="section-head"><div><p class="eyebrow">Voices in the conversation</p><h2>Keynote speakers.</h2></div>{text_link('Meet the speakers','./speakers/')}</div>{speakers()}</div></section>
-<section class="section"><div class="wrap dates-grid"><div><p class="eyebrow">Plan your participation</p><h2>Dates to know.</h2><p class="lead">Join us in Seoul in August 2027. Submission and registration milestones will be announced here.</p></div><div>{date_rows(dates())}<p class="tbu-legend">TBU = To be updated. Deadline times and time zone: {value_or_tbu(C['deadline_timezone'])}</p></div></div></section>
-<section class="invitation"><div class="wrap invitation-inner"><div><p class="eyebrow">An invitation to contribute</p><h2>Bring your perspective<br>to the conversation.</h2><p>We welcome 300-word proposals exploring AI through humanism, science, religion and beyond.</p></div>{button('Read the Call for Papers','./call-for-papers/','light')}</div></section>'''
+<section class="section"><div class="wrap dates-grid"><div><p class="eyebrow">Plan your participation</p><h2>Dates to know.</h2><p class="lead">All deadlines follow {value_or_tbu(C['deadline_timezone'])}.</p>{text_link('Registration details','./registration/')}</div><div>{date_rows(milestones)}</div></div></section>
+<section class="invitation"><div class="wrap invitation-inner"><div><p class="eyebrow">An invitation to contribute</p><h2>Bring your perspective<br>to the conversation.</h2><p>To propose a talk on AI and human flourishing, submit {e(submission_materials())}.</p></div>{button('Read the Call for Papers','./call-for-papers/','light')}</div></section>'''
     render('', 'Home', 'AI and Human Flourishing. Join the 2027 WYD-Sogang International Conference, 3–5 August 2027 at Sogang University, Seoul, South Korea.', body)
 
 
@@ -229,20 +239,41 @@ def cfp():
     quote = f'<figure class="papal-quote"><blockquote><p>“{e(C["papal_quote"])}”</p></blockquote><figcaption>Pope Leo XIV, <cite>{e(C["papal_quote_source"])}</cite>, {e(C["papal_quote_date"])}. <a href="{quote_url}">Read the official text at the Holy See</a>.</figcaption></figure>'
     content = article('invitation', 'An invitation to scholars.', quote + '<p>Sogang University invites proposals for the 2027 WYD-Sogang International Conference: AI and Human Flourishing, taking place on 3–5 August 2027.</p><p>Amid the coexisting promises and perils of artificial intelligence, the conference examines the theme “AI: humanism, science and religion.” We welcome submissions that analyze the risks and benefits of AI through these fields, including multidisciplinary approaches that bridge them.</p>')
     content += article('topics', 'Themes & topics.', f'<p>The following topics offer starting points for proposals. Contributions need not be limited to these areas.</p>{topics}<section class="topic-section" id="open-track"><div class="topic-title"><span class="track-number">+</span><h3>Open track</h3></div><p>Proposals beyond the three primary domains are welcome, including diverse perspectives and multidisciplinary work addressing AI and human flourishing.</p></section>')
-    guidelines = f'<ol class="submission-guidelines"><li>Please submit a {C["proposal_words"]}-word proposal {e(submission_period())}.</li></ol>' if submission_period() else f'<p>Please prepare a {C["proposal_words"]}-word proposal. The submission period will be announced here.</p>'
-    content += article('submission', 'Preparing your proposal.', f'{guidelines}<p>Further submission requirements will be published as arrangements are finalized.</p>{date_rows([("Proposal length",str(C["proposal_words"])+" words"),("Submission opens",C["submission_open_date"]),("Submission deadline",C["submission_deadline"]),("Deadline time zone",C["deadline_timezone"]),("File format & template",C["submission_instructions"]),("Review & presentation format",None),("Proceedings / publication policy",None)])}')
+    materials = submission_materials()
+    opening, deadline = C['submission_open_date'], C['submission_deadline']
+    guideline = f'Prepare {materials}.'
+    if opening and deadline:
+        guideline = f'Submit {materials} from {opening} through {deadline}.'
+    guidelines = [
+        *submission_dates(),
+        ("Deadline time zone", C["deadline_timezone"]),
+        ("File format & template", C["submission_instructions"]),
+        ("Peer review", C.get("review_format")),
+        ("Presentation format", C.get("presentation_format")),
+        ("Proceedings / publication policy", None),
+    ]
+    content += article('submission', 'Preparing your abstract.', f'<ol class="submission-guidelines"><li>{e(guideline)}</li></ol>{date_rows(guidelines)}')
     submission_url = checked_url(C['submission_url'])
     if submission_url:
-        how = f'<p>Submit your proposal using the conference submission portal.</p>{button("Open the submission portal",submission_url)}'
+        form_label = C.get('submission_form_label') or 'submission portal'
+        how = f'<p>Submit {e(materials)} via the {e(form_label)}.</p>{button(f"Open the {form_label}", submission_url)}'
     elif C['submission_email']:
-        how = f'<p>Send your proposal to <a href="mailto:{e(C["submission_email"])}">{e(C["submission_email"])}</a>.</p>'
+        how = f'<p>Send {e(materials)} to <a href="mailto:{e(C["submission_email"])}">{e(C["submission_email"])}</a>.</p>'
     else:
-        how = f'<div class="notice"><h3 class="notice-heading">Submission method {TBU}</h3><p>The submission portal or submission email address and opening date will be announced here. Proposal submission is not yet open.</p></div><p>For questions about the Call for Papers, contact <a href="{email_link("WYD-Sogang 2027 submission inquiry")}">{e(C["email"])}</a>.</p>'
+        how = f'<div class="notice"><h3 class="notice-heading">Submission method {TBU}</h3><p>Details on where to submit will be posted here.</p></div><p>For questions about the Call for Papers, contact <a href="{email_link("WYD-Sogang 2027 submission inquiry")}">{e(C["email"])}</a>.</p>'
     content += article('how-to-submit', 'How to submit.', how)
-    content += article('important-dates', 'Important dates.', date_rows([('Proposal submission opens',C['submission_open_date']),('Proposal submission deadline',C['submission_deadline']),('Acceptance notification',C['notification_date']),('Final paper / materials',C['final_paper_deadline']),('Conference',C['dates'])]) + '<p class="source-note">The Call for Papers is being finalized. Placeholder dates and items marked TBU will be updated on this website.</p>')
+    content += article('important-dates', 'Important dates.', date_rows([
+        *submission_dates(),
+        ('Acceptance notification', C['notification_date']),
+        ('Final paper / materials', C['final_paper_deadline']),
+        ('Conference', C['dates']),
+    ]))
     body = heading('Call for Papers', 'Explore the promises and risks of AI, and what they mean for human life, through humanism, science, religion and beyond.', 'Contribute to the conversation')
-    body += layout(content, [('invitation','The invitation'),('topics','Themes & topics'),('submission','Proposal guidelines'),('how-to-submit','How to submit'),('important-dates','Important dates')])
-    render('call-for-papers','Call for Papers','Submit a 300-word proposal to WYD-Sogang 2027. Explore topics in humanism, science, religion and the open track.',body)
+    body += layout(content, [('invitation','The invitation'),('topics','Themes & topics'),('submission','Abstract guidelines'),('how-to-submit','How to submit'),('important-dates','Important dates')])
+    description = f'Submit {materials} to WYD-Sogang 2027.'
+    if deadline:
+        description += f' Abstracts are due by {deadline}.'
+    render('call-for-papers', 'Call for Papers', description, body)
 
 
 def speakers_page():
@@ -252,22 +283,24 @@ def speakers_page():
 
 
 def program():
-    content = article('overview','Three days of shared inquiry.', f'<p>The conference will take place on {e(C["dates"])} at {e(C["venue"])} in {e(C["location"])}. The detailed program is being prepared.</p><div class="program-empty"><p class="eyebrow">Conference program</p><h3>Session schedule {TBU}</h3><p>{e(C["program_note"]) if C["program_note"] else "Session times, keynote talks, presentation formats and other program details will appear here once confirmed."}</p>{text_link("Explore the keynote speakers","../speakers/")}</div>')
-    content += article('schedule','Program details.',date_rows([('Daily session schedule',None),('Keynote titles & times',None),('Paper presentations',None),('Presentation language',None),('On-site / online participation',None),('Social events & meals',None)]))
-    content += article('presenters','For presenters.', '<p>Presentation duration, slide requirements, session allocation and technical arrangements will be shared once the program is confirmed.</p><p>Presentation instructions: '+TBU+'</p>')
+    content = article('overview','Three days of shared inquiry.', f'<p>The conference will take place on {e(C["dates"])} at {e(C["venue"])} in {e(C["location"])}. The detailed program is being prepared.</p><div class="program-empty"><p class="eyebrow">Conference program</p><h3>Session schedule {TBU}</h3><p>{e(C["program_note"]) if C["program_note"] else "Session times and keynote titles will appear here once confirmed."}</p>{text_link("Explore the keynote speakers","../speakers/")}</div>')
+    content += article('schedule','Program details.',date_rows([('Daily session schedule',None),('Keynote titles & times',None),('Paper presentation format',C.get('presentation_format')),('Presentation language',None),('On-site / online participation',None),('Social events & meals',None)]))
+    content += article('presenters','For presenters.', '<p>Talk lengths, session assignments and technical arrangements will be posted with the detailed program.</p>' + text_link('Read the abstract submission guidelines', '../call-for-papers/#submission'))
     render('program','Program','Program and schedule for the 2027 WYD-Sogang International Conference, 3–5 August 2027 at Sogang University.',heading('Program','3–5 August 2027 · Sogang University, Seoul. The detailed schedule will be published as arrangements are confirmed.','The conference at a glance')+layout(content,[('overview','Overview'),('schedule','Program details'),('presenters','For presenters')]))
 
 
 def registration():
     fees = C['fees']
     url = checked_url(C['registration_url'])
+    periods = registration_periods()
     # An active registration form requires published terms, not just a URL.
     ready = bool(url and C['privacy_policy'] and C['refund_policy'] and C['registration_inclusions'] and fees['status'] == 'confirmed')
-    status = f'<p>Registration is open. Please review the fees, inclusions and policies before registering.</p>{button("Open registration",url)}' if ready else '<p>Registration is not yet open. The registration form, opening date and payment instructions will be published here once confirmed.</p>'
-    content = article('registration-status','Registration information.',f'<div class="notice"><div class="status-heading"><span class="status-dot" aria-hidden="true"></span><h2>{"Registration open" if ready else "Registration opening"}</h2>{"" if ready else TBU}</div>{status}</div>{date_rows([("Registration opens",C["registration_open_date"]),("Early Bird registration",by_date(C["early_bird_deadline"])),("Regular registration",by_date(C["registration_deadline"]))])}')
+    status = f'<p>Registration is open. Please review the fees, inclusions and policies before registering.</p>{button("Open registration",url)}' if ready else '<p>Registration is not yet open. The registration form and payment instructions will be posted here.</p>'
+    notice = f'<div class="notice"><div class="status-heading"><span class="status-dot" aria-hidden="true"></span><h3>{"Registration open" if ready else "Registration form"}</h3></div>{status}</div>'
+    content = article('registration-status', 'Registration information.', notice + date_rows(periods.items()))
     fee_status = 'Confirmed rates' if fees['status']=='confirmed' else 'Proposed rates'
     fee_note = 'Rates are confirmed.' if fees['status']=='confirmed' else 'The rates below are proposed and subject to final confirmation. They are shown in US dollars. Payment is not yet available.'
-    cards = f'<div class="fee-grid"><div class="fee-card early"><h3 class="fee-label">Early Bird</h3><p class="price"><small>US$</small>{fees["early_bird"]}</p><p class="fee-deadline">Register {value_or_tbu(by_date(C["early_bird_deadline"]))}</p></div><div class="fee-card"><h3 class="fee-label">Regular registration</h3><p class="price"><small>US$</small>{fees["standard"]}</p><p class="fee-deadline">Register {value_or_tbu(by_date(C["registration_deadline"]))}</p></div></div>'
+    cards = f'<div class="fee-grid"><div class="fee-card early"><h3 class="fee-label">Early Bird registration</h3><p class="price"><small>US$</small>{fees["early_bird"]}</p><p class="fee-deadline">{value_or_tbu(periods["Early Bird registration"])}</p></div><div class="fee-card"><h3 class="fee-label">Regular registration</h3><p class="price"><small>US$</small>{fees["standard"]}</p><p class="fee-deadline">{value_or_tbu(periods["Regular registration"])}</p></div></div>'
     content += article('fees','Registration fees.',f'<p class="eyebrow">{fee_status}</p><p>{fee_note}</p>{cards}{date_rows([("Domestic fee & currency",fees["domestic_amount"]),("Student / special rates",None),("What the fee includes",C["registration_inclusions"])])}')
     paypal = checked_url(fees['paypal_url'])
     international = f'<p>PayPal payment is available through the official conference payment link.</p>{button("Pay with PayPal",paypal)}' if ready and paypal else f'<p>PayPal Business is being considered for international payments. The payment method and official payment link are {TBU}. No payment is being collected at this stage.</p>'
@@ -281,13 +314,14 @@ def registration():
     content += article('payment','Payment methods.',f'<div class="payment-block"><div class="payment-title"><h3>International participants</h3>{"" if ready and paypal else TBU}</div>{international}</div><div class="payment-block"><div class="payment-title"><h3>Participants in Korea · 국내 참가자</h3>{"" if ready and (fees["domestic_payment_instructions"] or domestic_url) else TBU}</div>{domestic}</div>')
     content += article('policies','Registration policies.',date_rows([('Cancellation & refunds',C['refund_policy']),('Registration confirmation / receipt',None),('Author registration requirements',None),('Privacy notice & consent',C['privacy_policy'])]))
     faqs = [
-        ('Can I register or pay now?', 'Registration and payment are not yet open. The official form and payment instructions will be published on this page once confirmed.' if not ready else 'Use the registration link above, and follow the official payment instructions.'),
+        ('Can I register or pay now?', 'Registration and payment are not yet open. See the registration periods above for Early Bird and regular dates.' if not ready else 'Use the registration link above, and follow the official payment instructions.'),
         ('Can participants in Korea pay in Korean won?', 'The domestic payment currency, fee and receiving account are TBU. The proposed US dollar rates do not yet specify a Korean won amount.' if not fees['domestic_amount'] else str(fees['domestic_amount'])),
         ('What is included in the fee?', C['registration_inclusions'] or 'TBU. Conference access, meals, refreshments, materials and any social events will be specified before registration opens.'),
         ('Who should I contact about registration?', f'Please email the conference team at {C["email"]}.'),
     ]
     content += article('faq','Frequently asked questions.', ''.join(f'<details><summary>{e(question)}</summary><p>{e(answer)}</p></details>' for question,answer in faqs))
-    render('registration','Registration','WYD-Sogang 2027 registration information. Proposed fees: Early Bird US$100, standard US$150. Registration and payment details to be updated.',heading('Registration','Join the conversation in Seoul. Find participation fees, registration updates and payment information here.','Plan your participation')+layout(content,[('registration-status','Registration status'),('fees','Fees'),('payment','Payment methods'),('policies','Policies'),('faq','Frequently asked questions')],registration=True))
+    description = 'WYD-Sogang 2027 registration dates and fees. ' + ' '.join(f'{label}, {period}.' for label, period in periods.items() if period)
+    render('registration','Registration',description,heading('Registration','Find the Early Bird and regular registration dates, participation fees and payment information.','Plan your participation')+layout(content,[('registration-status','Registration status'),('fees','Fees'),('payment','Payment methods'),('policies','Policies'),('faq','Frequently asked questions')],registration=True))
 
 
 def venue():

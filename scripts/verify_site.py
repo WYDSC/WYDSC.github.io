@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from html import unescape
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
@@ -78,21 +79,42 @@ def main():
                 errors.append(f'{path}: missing fragment {href}')
     config = json.loads((ROOT / 'data/conference.json').read_text(encoding='utf-8'))
     cfp = (PUBLIC / 'call-for-papers/index.html').read_text(encoding='utf-8')
-    from html import unescape
     readable_cfp = unescape(cfp)
     for expected in (
         config['papal_quote'],
         config['papal_quote_source'],
         config['papal_quote_url'],
-        f'between {config["submission_open_date"]}, and {config["submission_deadline"]}',
+        f'a {config["proposal_words"]}-word abstract and a one-page CV',
+        config['deadline_timezone'],
+        config['notification_date'],
+        config['submission_instructions'],
+        config.get('review_format'),
+        config.get('presentation_format'),
     ):
-        if expected not in readable_cfp:
-            errors.append(f'CFP source or submission-period content omitted: {expected}')
+        if expected and expected not in readable_cfp:
+            errors.append(f'CFP content omitted: {expected}')
+    opening, deadline = config['submission_open_date'], config['submission_deadline']
+    if opening and deadline and f'from {opening} through {deadline}' not in readable_cfp:
+        errors.append('The abstract guidelines must include the full submission period')
+    if config['submission_url'] and config['submission_url'] not in pages[PUBLIC / 'call-for-papers/index.html'].links:
+        errors.append('The CFP submission form link is missing')
     for track in config['tracks']:
         for topic in track['topics']:
             if topic not in readable_cfp:
                 errors.append(f'CFP topic omitted: {topic}')
     registration = (PUBLIC / 'registration/index.html').read_text(encoding='utf-8')
+    home = (PUBLIC / 'index.html').read_text(encoding='utf-8')
+    for label, start, end in (
+        ('Early Bird registration', config['registration_open_date'], config['early_bird_deadline']),
+        ('Regular registration', config.get('regular_registration_open_date'), config['registration_deadline']),
+    ):
+        if start and end:
+            period = f'{start} through {end}'
+            row = f'<dt>{label}</dt><dd>{period}</dd>'
+            if row not in unescape(home) or row not in unescape(registration):
+                errors.append(f'{label} period missing from the home or registration schedule')
+            if f'<p class="fee-deadline">{period}</p>' not in unescape(registration):
+                errors.append(f'{label} period missing from the fee cards')
     if not config['registration_url']:
         if 'Registration is not yet open.' not in registration:
             errors.append('Registration must clearly report that it is not open')

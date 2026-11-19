@@ -52,7 +52,7 @@ The current site is an information site. It collects no registration data, store
 
 Registration remains closed until `registration_url`, `privacy_policy`, `refund_policy` and `registration_inclusions` are provided, and `fees.status` is `confirmed`. Links must use HTTPS. Configure `fees.paypal_url`, `fees.domestic_payment_url` and/or `fees.domestic_payment_instructions` only after the conference administration has approved the receiving entity, account and process. These links do not automatically verify settlement. A hosted payment page may be linked from a static website, but private API credentials, payment verification and participant records must be handled by the chosen external service or backend.
 
-Proposal submission also remains closed until an approved `submission_url` or `submission_email` is supplied. The shared contact mailbox is for inquiries and is not silently repurposed as a submission system.
+The Call for Papers links to the organizer’s Google Form for a 300-word abstract and a one-page CV. The submission and registration periods are maintained in `data/conference.json`. Participant registration uses a separate `registration_url`.
 
 ## Sources and status
 
