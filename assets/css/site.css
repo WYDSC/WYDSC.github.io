@@ -178,7 +178,8 @@ p { margin-bottom: 20px; }
 .topic-list li::marker { color: #81917b; font-size: 10px; }
 .notice { border-left: 3px solid var(--rust); background: #eee9df; padding: 21px 24px; font-size: 13px; margin-bottom: 25px; }
 .notice p { margin-bottom: 0; font-size: 13px; }
-.notice-heading { font-family: var(--sans); font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+.notice-heading { font-family: var(--sans); font-size: 13px; font-weight: 600; letter-spacing: .02em; margin-bottom: 8px; }
+.notice-heading .tbu { margin-inline-start: .25rem; }
 .facts-list { margin: 0; }
 .facts-list .date-row { align-items: baseline; }
 .facts-list .date-row dd { max-width: 60%; flex-shrink: 1; }
